@@ -48,6 +48,7 @@ func (c *Config) Configure(opts ...ConfigOption) {
 	}
 }
 
+// Apply 修改Config
 func (c *Config) Apply(cfg *Config) {
 	if cfg != c {
 		*cfg = *c
@@ -56,10 +57,10 @@ func (c *Config) Apply(cfg *Config) {
 
 // NewConfig create a *Config
 func NewConfig(opts ...ConfigOption) *Config {
-	// TODO
 	cfg := &Config{
-		Primary: DSN{},
-		Config:  nil,
+		Primary:  DSN{},
+		Clusters: make([]Cluster, 0),
+		Config:   &gorm.Config{},
 	}
 	cfg.Configure(opts...)
 	return cfg
