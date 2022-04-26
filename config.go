@@ -7,27 +7,30 @@ import (
 	"gorm.io/gorm"
 )
 
+// DSN Data Source Name
 type DSN struct {
-	Host     string
-	Port     int64
-	DataBase string
-	Username string
-	Password string
+	Host     string // 主机
+	Port     int64  // 端口
+	DataBase string // 数据库名
+	Username string // 用户名
+	Password string // 密码
 }
 
-type Cluster struct {
-	Sources  []DSN
-	Replicas []DSN
-	Targets  []interface{}
-}
-
-func (c Cluster) IsEmpty() bool {
-	return len(c.Sources)+len(c.Replicas) == 0
-}
-
-func (d DSN) String() string {
+func (d *DSN) String() string {
 	format := "%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local&time_zone=%s"
 	return fmt.Sprintf(format, d.Username, d.Password, d.Host, d.Port, d.DataBase, url.QueryEscape(`'Asia/Shanghai'`))
+}
+
+// Cluster 集群配置信息
+type Cluster struct {
+	Sources  []DSN         // 源信息列表
+	Replicas []DSN         // 副本信息列表
+	Targets  []interface{} // 所控制的对象，可留空
+}
+
+// IsEmpty 判断是否为空
+func (c *Cluster) IsEmpty() bool {
+	return len(c.Sources)+len(c.Replicas) == 0
 }
 
 type Config struct {

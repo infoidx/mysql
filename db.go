@@ -8,8 +8,10 @@ import (
 	"gorm.io/plugin/dbresolver"
 )
 
+// DBOption 运行时设置
 type DBOption func(db *gorm.DB) error
 
+// SetMaxIdleConns 运行时设置 设置最大空闲链接数量
 var SetMaxIdleConns = func(v int) DBOption {
 	return func(db *gorm.DB) error {
 		if db == nil {
@@ -24,6 +26,7 @@ var SetMaxIdleConns = func(v int) DBOption {
 	}
 }
 
+// SetMaxOpenConns 运行时设置 设置最大连接数
 var SetMaxOpenConns = func(v int) DBOption {
 	return func(db *gorm.DB) error {
 		if db == nil {
@@ -38,6 +41,7 @@ var SetMaxOpenConns = func(v int) DBOption {
 	}
 }
 
+// SetConnMaxLifetime 运行时设置 设置最大生命周期
 var SetConnMaxLifetime = func(d time.Duration) DBOption {
 	return func(db *gorm.DB) error {
 		if db == nil {
@@ -52,6 +56,7 @@ var SetConnMaxLifetime = func(d time.Duration) DBOption {
 	}
 }
 
+// SetConnMaxIdleTime 运行时设置,设置最大空闲时间
 var SetConnMaxIdleTime = func(d time.Duration) DBOption {
 	return func(db *gorm.DB) error {
 		if db == nil {
