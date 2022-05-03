@@ -73,10 +73,12 @@ var SetConnMaxIdleTime = func(d time.Duration) DBOption {
 
 // New initialize a new *gorm.DB
 func New(cfg *Config, opts ...DBOption) (*gorm.DB, error) {
-	db, err := gorm.Open(driverMySQL.Open(cfg.Primary.String()), cfg.Config)
+	dsn := cfg.Primary.String()
+	db, err := gorm.Open(driverMySQL.Open(dsn), cfg.gConfig)
 	if err != nil {
 		return nil, err
 	}
+
 	// 如果有集群配置
 	if len(cfg.Clusters) > 0 {
 		var dbResolver *dbresolver.DBResolver
@@ -97,7 +99,11 @@ func New(cfg *Config, opts ...DBOption) (*gorm.DB, error) {
 						dbClusterConfig.Sources = append(dbClusterConfig.Sources, driverMySQL.Open(replica.String()))
 					}
 				}
-				dbResolver = dbresolver.Register(dbClusterConfig, cfgCluster.Targets...)
+				datas := make([]interface{}, 0)
+				for _, target := range cfgCluster.Targets {
+					datas = append(datas, target)
+				}
+				dbResolver = dbresolver.Register(dbClusterConfig, datas...)
 			}
 		}
 		db.Use(dbResolver)
